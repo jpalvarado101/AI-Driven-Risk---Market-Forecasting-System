@@ -12,7 +12,7 @@ from stable_baselines3.common.vec_env import DummyVecEnv
 
 def train_agent(total_timesteps=10000):
     # Load processed market data
-    df = pd.read_csv("J:\John Alvarado\Documents\projects\AI-Driven Risk & Market Forecasting System\AI-Driven-Risk---Market-Forecasting-System\data\processed_data.csv")
+    df = pd.read_csv("./data/processed_data.csv")
     
     # Create the trading environment
     env = TradingEnv(df)
@@ -27,11 +27,11 @@ def train_agent(total_timesteps=10000):
     print("Training completed.")
 
     # Save the trained model
-    model.save("J:\John Alvarado\Documents\projects\AI-Driven Risk & Market Forecasting System\AI-Driven-Risk---Market-Forecasting-System\models\ppo_trading_agent")
-    print("Model saved to J:\John Alvarado\Documents\projects\AI-Driven Risk & Market Forecasting System\AI-Driven-Risk---Market-Forecasting-System\models\ppo_trading_agent.zip")
+    model.save("./models/ppo_trading_agent")
+    print("Model saved to ./models/ppo_trading_agent.zip")
     return model
 
-def load_agent(model_path="J:\John Alvarado\Documents\projects\AI-Driven Risk & Market Forecasting System\AI-Driven-Risk---Market-Forecasting-System\models\ppo_trading_agent.zip"):
+def load_agent(model_path="./models/ppo_trading_agent.zip"):
     # Load a previously trained agent
     model = PPO.load(model_path)
     return model

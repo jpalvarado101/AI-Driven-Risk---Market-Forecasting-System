@@ -13,8 +13,17 @@ import uvicorn
 
 app = FastAPI(title="RL Trading Agent API")
 
-# Load the trained RL model (ensure you have trained the agent before starting the API)
-model = load_agent()
+# Load the trained RL model
+try:
+    model = load_agent()
+except Exception as e:
+    print(f"Error loading RL model: {e}")
+    model = None  # Prevent API from crashing
+
+# Define a root endpoint to avoid "Not Found" error
+@app.get("/")
+def home():
+    return {"message": "Welcome to the RL Trading API! Use /predict to get predictions."}
 
 # Define the data model for incoming requests
 class MarketData(BaseModel):
@@ -32,17 +41,24 @@ class MarketData(BaseModel):
 
 @app.post("/predict")
 def predict(data: MarketData):
+    if model is None:
+        return {"error": "Model is not loaded. Train the model first!"}
+
     # Build the observation vector for the model
     obs = np.array([[data.Open, data.High, data.Low, data.Close, data.Volume,
                      data.rsi, data.macd, data.sma_50, data.sma_200,
                      data.balance, data.shares_held]], dtype=np.float32)
-    # Get the predicted action from the RL agent
-    action, _ = model.predict(obs)
-    # Map numeric actions to human-readable form
-    action_mapping = {0: "hold", 1: "buy", 2: "sell"}
-    predicted_action = int(action[0])
-    return {"action": action_mapping.get(predicted_action, "unknown")}
 
+    # Get the predicted action from the RL agent
+    try:
+        action, _ = model.predict(obs)
+        action_mapping = {0: "hold", 1: "buy", 2: "sell"}
+        return {"action": action_mapping.get(int(action[0]), "unknown")}
+    except Exception as e:
+        return {"error": f"Prediction failed: {e}"}
+
+# Only run Uvicorn when executing the script directly
 if __name__ == "__main__":
-    # Run the API with uvicorn on port 8000
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    import os
+    port = int(os.getenv("PORT", 8000))  # Cloud deployment compatibility
+    uvicorn.run(app, host="0.0.0.0", port=port)

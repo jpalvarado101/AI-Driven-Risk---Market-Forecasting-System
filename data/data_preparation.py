@@ -36,7 +36,7 @@ def add_technical_indicators(df):
 def prepare_data():
     df = fetch_data()
     df = add_technical_indicators(df)
-    output_path = "J:\John Alvarado\Documents\projects\AI-Driven Risk & Market Forecasting System\AI-Driven-Risk---Market-Forecasting-System\data\processed_data.csv"
+    output_path = "./data/processed_data.csv"
     df.to_csv(output_path, index=False)
     print(f"Data prepared and saved to {output_path}")
 
