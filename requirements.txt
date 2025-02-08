@@ -1,0 +1,11 @@
+pandas
+numpy
+yfinance
+ta
+gym
+stable-baselines3
+matplotlib
+fastapi
+uvicorn
+streamlit
+scipy
