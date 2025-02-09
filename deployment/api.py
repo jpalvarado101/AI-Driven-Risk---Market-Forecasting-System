@@ -25,8 +25,18 @@ except Exception as e:
 def home():
     return {"message": "Welcome to the RL Trading API! Use /predict to get predictions."}
 
+# Dictionary to cache models per ticker
+ticker_models = {}
+
+def get_model_for_ticker(ticker: str):
+    if ticker not in ticker_models:
+        model_path = f"./models/ppo_trading_agent_{ticker}.zip"
+        ticker_models[ticker] = load_agent(model_path)
+    return ticker_models[ticker]
+
 # Define the data model for incoming requests
 class MarketData(BaseModel):
+    ticker: str
     Open: float
     High: float
     Low: float
@@ -41,21 +51,22 @@ class MarketData(BaseModel):
 
 @app.post("/predict")
 def predict(data: MarketData):
-    if model is None:
-        return {"error": "Model is not loaded. Train the model first!"}
-
+    # Get the model for the provided ticker
+    model = get_model_for_ticker(data.ticker)
     # Build the observation vector for the model
     obs = np.array([[data.Open, data.High, data.Low, data.Close, data.Volume,
                      data.rsi, data.macd, data.sma_50, data.sma_200,
                      data.balance, data.shares_held]], dtype=np.float32)
-
-    # Get the predicted action from the RL agent
     try:
+        # Get the predicted action from the RL agent
         action, _ = model.predict(obs)
+        # Map numeric actions to human-readable form
         action_mapping = {0: "hold", 1: "buy", 2: "sell"}
-        return {"action": action_mapping.get(int(action[0]), "unknown")}
+        predicted_action = int(action[0])
+        return {"action": action_mapping.get(predicted_action, "unknown")}
     except Exception as e:
         return {"error": f"Prediction failed: {e}"}
+
 
 # Only run Uvicorn when executing the script directly
 if __name__ == "__main__":

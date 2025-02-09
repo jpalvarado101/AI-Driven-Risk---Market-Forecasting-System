@@ -10,9 +10,9 @@ from env.trading_env import TradingEnv
 from stable_baselines3 import PPO
 from stable_baselines3.common.vec_env import DummyVecEnv
 
-def train_agent(total_timesteps=10000):
-    # Load processed market data
-    df = pd.read_csv("./data/processed_data.csv")
+def train_agent(ticker="AAPL", total_timesteps=10000):
+    # Load processed market data for the given ticker
+    df = pd.read_csv(f"./data/processed_data_{ticker}.csv")
     
     # Create the trading environment
     env = TradingEnv(df)
@@ -22,17 +22,17 @@ def train_agent(total_timesteps=10000):
     model = PPO("MlpPolicy", env, verbose=1)
     
     # Train the agent
-    print("Starting training...")
+    print(f"Starting training for {ticker}...")
     model.learn(total_timesteps=total_timesteps)
     print("Training completed.")
 
     # Save the trained model
-    model.save("./models/ppo_trading_agent")
-    print("Model saved to ./models/ppo_trading_agent.zip")
+    model.save(f"./models/ppo_trading_agent_{ticker}")
+    print(f"Model saved to ./models/ppo_trading_agent_{ticker}.zip")
     return model
 
-def load_agent(model_path="./models/ppo_trading_agent.zip"):
-    # Load a previously trained agent
+def load_agent(model_path):
+    # Load a previously trained agent from the given model_path
     model = PPO.load(model_path)
     return model
 
