@@ -1,8 +1,8 @@
 """
 data/data_preparation.py
 
-Downloads historical stock data using yfinance for multiple tickers, computes technical indicators,
-and saves the processed data to CSV files.
+Downloads historical stock data using yfinance for multiple tickers,
+computes technical indicators and additional crisis features, and saves the processed data to CSV files.
 """
 
 import yfinance as yf
@@ -16,20 +16,54 @@ def fetch_data(ticker="AAPL", period="20y", interval="1d"):
     return df
 
 def add_technical_indicators(df):
-    print("Adding technical indicators...")
+    print("Adding technical indicators and extra features...")
     # Ensure that the 'Close' column is a 1-dimensional Series.
     close_series = df['Close']
     if isinstance(close_series, pd.DataFrame):
         close_series = close_series.squeeze()
     
-    # Compute Relative Strength Index (RSI)
-    df['rsi'] = ta.momentum.rsi(close_series, window=14)
-    # Compute MACD (Moving Average Convergence Divergence)
-    df['macd'] = ta.trend.macd(close_series)
-    # Compute Simple Moving Averages
-    df['sma_50'] = close_series.rolling(window=50).mean()
-    df['sma_200'] = close_series.rolling(window=200).mean()
-    # Fill missing values
+    # Basic technical indicators:
+    rsi_values = ta.momentum.rsi(close_series, window=14).to_numpy().flatten()
+    df.loc[:, 'rsi'] = pd.Series(rsi_values, index=df.index)
+    
+    macd_values = ta.trend.macd(close_series).to_numpy().flatten()
+    df.loc[:, 'macd'] = pd.Series(macd_values, index=df.index)
+    
+    sma_50 = close_series.rolling(window=50).mean().to_numpy().flatten()
+    df.loc[:, 'sma_50'] = pd.Series(sma_50, index=df.index)
+    
+    sma_200 = close_series.rolling(window=200).mean().to_numpy().flatten()
+    df.loc[:, 'sma_200'] = pd.Series(sma_200, index=df.index)
+    
+    # Additional Crisis Features:
+    # 1. Volume Spike Indicator: Current Volume / (30-day Average Volume)
+    avg_volume = df['Volume'].rolling(window=30).mean().to_numpy().flatten()
+    df.loc[:, 'avg_volume'] = pd.Series(avg_volume, index=df.index)
+    
+    volume_values = df['Volume'].to_numpy().flatten()
+    vol_spike = volume_values / avg_volume
+    df.loc[:, 'vol_spike'] = pd.Series(vol_spike, index=df.index)
+    
+    # 2. Drawdown: (Peak Price - Current Price) / Peak Price
+    peak_price = df['Close'].cummax().to_numpy().flatten()
+    df.loc[:, 'peak_price'] = pd.Series(peak_price, index=df.index)
+    
+    close_values = df['Close'].to_numpy().flatten()
+    drawdown = (peak_price - close_values) / peak_price
+    df.loc[:, 'drawdown'] = pd.Series(drawdown, index=df.index)
+    
+    # 3. Price Z-Score (for mean reversion):
+    #    Z-Score = (Current Price - 30-day Mean) / (30-day Std Dev)
+    price_mean = close_series.rolling(window=30).mean().to_numpy().flatten()
+    df.loc[:, 'price_mean'] = pd.Series(price_mean, index=df.index)
+    
+    price_std = close_series.rolling(window=30).std().to_numpy().flatten()
+    df.loc[:, 'price_std'] = pd.Series(price_std, index=df.index)
+    
+    price_zscore = (close_values - price_mean) / price_std
+    df.loc[:, 'price_zscore'] = pd.Series(price_zscore, index=df.index)
+    
+    # Fill missing values (backward fill any NaNs from rolling calculations)
     df = df.fillna(method='bfill')
     return df
 

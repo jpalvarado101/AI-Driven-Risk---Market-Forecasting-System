@@ -12,6 +12,8 @@ st.title("RL Trading Agent Dashboard")
 
 st.header("Trading Action Prediction")
 
+st.text("Current Implementation: Assumes the new observation is the latest. It appends the new observation to the end and then computes rolling features. \n Historical Observation Issue: If you provide data from 2020, it will be treated as the most recent data point, leading to incorrect rolling calculations. \nSolution: Calculate the most recent values for the best results.")
+
 # Allow the user to select a ticker from the supported list.
 tickers = ["AAPL", "NVDA", "MSFT", "TSLA", "META"]
 selected_ticker = st.selectbox("Select Ticker", tickers)
@@ -59,5 +61,5 @@ if submit_button:
     except Exception as e:
         st.error(f"API request failed: {e}")
 
-st.header("Risk Metrics Overview")
-st.write("This section can be expanded to display computed risk metrics (e.g., Sharpe Ratio, VaR, Maximum Drawdown) over historical performance.")
+""" st.header("Risk Metrics Overview")
+st.write("This section can be expanded to display computed risk metrics (e.g., Sharpe Ratio, VaR, Maximum Drawdown) over historical performance.") """
