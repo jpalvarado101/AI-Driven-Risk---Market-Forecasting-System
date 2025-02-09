@@ -15,7 +15,7 @@ This project implements a **Reinforcement Learning (RL) agent for financial mark
 
 ---
 
-[![Watch the video](AI-Driven-Risk---Market-Forecasting-System/maxresdefaultplay.jpg)](https://youtu.be/CHR2EzLQ6k8)
+[![Watch the video](https://github.com/jpalvarado101/AI-Driven-Risk---Market-Forecasting-System/blob/main/maxresdefaultplay.jpg)](https://youtu.be/CHR2EzLQ6k8)
 
 ### [Watch this video on YouTube](https://youtu.be/CHR2EzLQ6k8)
 
