@@ -2,7 +2,7 @@
 dashboard/dashboard.py
 
 A Streamlit dashboard for interacting with the RL trading agent API.
-Users can input market data, receive a trading action prediction, and view risk metrics.
+Users can select a ticker, input market data, receive a trading action prediction, and view risk metrics.
 """
 
 import streamlit as st
@@ -11,6 +11,10 @@ import requests
 st.title("RL Trading Agent Dashboard")
 
 st.header("Trading Action Prediction")
+
+# Allow the user to select a ticker from the supported list.
+tickers = ["AAPL", "NVDA", "MSFT", "TSLA", "META"]
+selected_ticker = st.selectbox("Select Ticker", tickers)
 
 with st.form(key='prediction_form'):
     col1, col2 = st.columns(2)
@@ -32,6 +36,7 @@ with st.form(key='prediction_form'):
 
 if submit_button:
     payload = {
+        "ticker": selected_ticker,
         "Open": open_price,
         "High": high_price,
         "Low": low_price,
@@ -48,7 +53,7 @@ if submit_button:
         response = requests.post("http://localhost:8000/predict", json=payload)
         if response.status_code == 200:
             result = response.json()
-            st.success(f"Predicted Action: {result['action']}")
+            st.success(f"Predicted Action for {selected_ticker}: {result['action']}")
         else:
             st.error("Error: Prediction API returned a non-200 status code.")
     except Exception as e:

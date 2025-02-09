@@ -1,15 +1,15 @@
 """
 data/data_preparation.py
 
-Downloads historical stock data using yfinance, computes technical indicators,
-and saves the processed data to CSV.
+Downloads historical stock data using yfinance for multiple tickers, computes technical indicators,
+and saves the processed data to CSV files.
 """
 
 import yfinance as yf
 import pandas as pd
 import ta  # Technical Analysis library
 
-def fetch_data(ticker="AAPL", period="5y", interval="1d"):
+def fetch_data(ticker="AAPL", period="20y", interval="1d"):
     print(f"Fetching data for {ticker}...")
     df = yf.download(ticker, period=period, interval=interval)
     df.reset_index(inplace=True)
@@ -33,12 +33,17 @@ def add_technical_indicators(df):
     df = df.fillna(method='bfill')
     return df
 
-def prepare_data():
-    df = fetch_data()
+def prepare_data_for_ticker(ticker):
+    df = fetch_data(ticker=ticker)
     df = add_technical_indicators(df)
-    output_path = "./data/processed_data.csv"
+    output_path = f"./data/processed_data_{ticker}.csv"
     df.to_csv(output_path, index=False)
-    print(f"Data prepared and saved to {output_path}")
+    print(f"Data for {ticker} prepared and saved to {output_path}")
+
+def prepare_data_multi(tickers=["AAPL", "NVDA", "MSFT", "TSLA", "META"]):
+    for ticker in tickers:
+        prepare_data_for_ticker(ticker)
 
 if __name__ == "__main__":
-    prepare_data()
+    tickers = ["AAPL", "NVDA", "MSFT", "TSLA", "META"]
+    prepare_data_multi(tickers)
