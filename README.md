@@ -260,7 +260,6 @@ streamlit run dashboard/dashboard.py
 - **Streamlit** (Dashboard UI)
 - **Docker** (Containerization)
 - **Yahoo Finance API** (Stock Data Retrieval)
-
 ---
 
 ## 🌟 Future Improvements
@@ -269,10 +268,10 @@ streamlit run dashboard/dashboard.py
 - 🔹 **Add sentiment analysis (Twitter, news data)** for smarter decision-making.
 - 🔹 **Optimize model execution using TensorRT or JAX for faster inference.**
 - 🔹 **Integrate Bayesian Optimization for hyperparameter tuning.**
-```
-
 ---
 
+
+## 🌟 Future Improvements
 ## 📜 License
 
 This project is under the **Apache 2.0 License**.
