@@ -15,6 +15,9 @@ This project implements a **Reinforcement Learning (RL) agent for financial mark
 
 ---
 
+[![Watch the video](https://youtu.be/CHR2EzLQ6k8)](https://youtu.be/CHR2EzLQ6k8)
+
+
 ## 🎯 Project Architecture
 
 ```
