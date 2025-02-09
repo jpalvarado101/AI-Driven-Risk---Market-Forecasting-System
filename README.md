@@ -222,7 +222,7 @@ This project is under the **Apache 2.0 License**.
 
 🚀 **Developer:** John Alvarado
 📩 **Email:** contact@johnferreralvarado.com
-🌐 **LinkedIn:** [\[My LinkedIn\] ](https://www.linkedin.com/in/johnfalvarado/)
+🌐 **LinkedIn:** [\[https://www.linkedin.com/in/johnfalvarado\] ](https://www.linkedin.com/in/johnfalvarado/)
 
 ---
 
