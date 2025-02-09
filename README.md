@@ -205,17 +205,12 @@ streamlit run dashboard/dashboard.py
 🔹 **Optimize model execution using TensorRT or JAX for faster inference.**  
 🔹 **Integrate Bayesian Optimization for hyperparameter tuning.**
 
----
-
-## 🤝 Contributing
-
-Feel free to open an **issue** or **pull request** if you'd like to improve this project!
 
 ---
 
 ## 📜 License
 
-This project is open-source under the **MIT License**.
+This project is under the **Apache 2.0 License**.
 
 ---
 
